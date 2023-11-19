@@ -20,29 +20,36 @@ use crate::{
 pub async fn create_orders_handler(
   Path(table_number): Path<i16>,
   State(data): State<Arc<AppState>>,
-  Json(body): Json<Vec<CreateOrderSchema>>,
+  Json(body): Json<CreateOrderSchema>,
 ) -> Result<impl IntoResponse, CustomError> {
-
   // Validation
+
+  //  If table number is not within 1-100, return error.
   if table_number < 1 || table_number > 100 {
-    return Err(CustomError::TableNotFound)
+    return Err(CustomError::TableNotFound);
   }
   
-  let order_count = body.len();
+  //  If there are no orders or more than 10 orders, return error.
+  let body_iter = body.orders.into_iter();
+  let order_count = body_iter.len();
   if order_count < 1 {
-    return Err(CustomError::AtLastOneOrder)
+    return Err(CustomError::AtLastOneOrder);
   }
   if order_count > 10 {
-    return Err(CustomError::TooManyOrders)
+    return Err(CustomError::TooManyOrders);
   }
 
+  //  Prepare arrays to contain transformed data for PostgreSQL UNNEST request.
   let mut table_numbers: Vec<i16> = Vec::new();
   let mut items: Vec<String> = Vec::new();
   let mut cook_times: Vec<i16> = Vec::new();
 
-  for order in body.into_iter() {
+  //  Iterate through the request body.
+  for order in body_iter {
+    //  Make an array for the table number the same length as the other arrays.
     table_numbers.push(table_number);
 
+    //  If the string is empty or is more than 255 characters, return error.
     if order.item.is_empty() {
       return Err(CustomError::OrderMissingItem);
     }
@@ -51,6 +58,7 @@ pub async fn create_orders_handler(
     }
     items.push(order.item);
 
+    //  If the cooking time is not within 1-30 minutes, return error.
     if order.cook_time < 1 {
       return Err(CustomError::OrderCookTimeTooShort);
     }
@@ -61,7 +69,7 @@ pub async fn create_orders_handler(
   }
 
 
-
+  // Database request
   let query_result = sqlx::query_as!(
     OrderModel,
     "INSERT INTO orders(table_number, item, cook_time) SELECT * FROM UNNEST($1::smallint[], $2::text[], $3::smallint[]) RETURNING *",
@@ -73,6 +81,7 @@ pub async fn create_orders_handler(
   .await;
 
 
+  // Request result
   match query_result {
     Ok(_) => {
       let orders_result = query_result.unwrap();
