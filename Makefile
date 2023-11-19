@@ -10,7 +10,7 @@ start:
 
 ## Start up the backend in dev mode
 .PHONY: start-dev
-start:
+start-dev:
 	cd backend && make start-dev
 
 ## Shut down the backend
