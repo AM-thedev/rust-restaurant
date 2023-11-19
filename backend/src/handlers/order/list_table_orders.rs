@@ -2,12 +2,13 @@ use std::sync::Arc;
 
 use axum::{
   extract::{Query, State, Path},
-  http::StatusCode,
   response::IntoResponse,
   Json,
 };
+use serde_json::json;
 
 use crate::{
+  errors::CustomError,
   models::order::OrderModel,
   schemas::order::search_table_pagination::SearchTablePagination,
   AppState,
@@ -18,7 +19,13 @@ pub async fn table_orders_list_handler(
   Path(table_number): Path<i16>,
   opts: Option<Query<SearchTablePagination>>,
   State(data): State<Arc<AppState>>,
-) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+) -> Result<impl IntoResponse, CustomError> {
+
+  // Validation
+  if table_number < 1 || table_number > 100 {
+    return Err(CustomError::TableNotFound)
+  }
+
   let Query(opts) = opts.unwrap_or_default();
 
   let limit = opts.limit.unwrap_or(10);
@@ -35,16 +42,12 @@ pub async fn table_orders_list_handler(
   .await;
 
   if query_result.is_err() {
-    let error_response = serde_json::json!({
-      "status": "fail",
-      "message": "Something bad happened while fetching the table orders.",
-    });
-    return Err((StatusCode::INTERNAL_SERVER_ERROR, Json(error_response)));
+    return Err(CustomError::InternalServerError);
   }
 
   let orders = query_result.unwrap();
 
-  let json_response = serde_json::json!({
+  let json_response = json!({
     "status": "success",
     "results": orders.len(),
     "orders": orders

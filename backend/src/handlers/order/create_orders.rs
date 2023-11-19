@@ -6,19 +6,14 @@ use axum::{
   response::IntoResponse,
   Json,
 };
-/*
-use sqlx::{
-  Postgres,
-  QueryBuilder,
-  //PgRow
-};
-*/
+use unicode_segmentation::UnicodeSegmentation;
 use serde_json::json;
 
 use crate::{
+  AppState,
+  errors::CustomError,
   models::order::OrderModel,
   schemas::order::create_order::CreateOrderSchema,
-  AppState,
 };
 
 
@@ -26,42 +21,46 @@ pub async fn create_orders_handler(
   Path(table_number): Path<i16>,
   State(data): State<Arc<AppState>>,
   Json(body): Json<Vec<CreateOrderSchema>>,
-) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
-  /*
-  #[derive(Serialize, Deserialize)]
-  #[serde(remote = "PgRow")]
-  struct PgRowDef {
-      secs: i64,
-      nanos: i32,
+) -> Result<impl IntoResponse, CustomError> {
+
+  // Validation
+  if table_number < 1 || table_number > 100 {
+    return Err(CustomError::TableNotFound)
+  }
+  
+  let order_count = body.len();
+  if order_count < 1 {
+    return Err(CustomError::AtLastOneOrder)
+  }
+  if order_count > 10 {
+    return Err(CustomError::TooManyOrders)
   }
 
-  //let orders: Vec<CreateOrderSchema> = serde_json::from_string(body);
-  let orders = body.into_iter();
-  const BIND_LIMIT: usize = 65535;
-  let mut query_builder: QueryBuilder<Postgres> = QueryBuilder::new("INSERT INTO orders(table_number, item, cook_time) ");
-
-  query_builder.push_values(orders.take(BIND_LIMIT / 4), |mut b, order| {
-    b.push_bind(table_number)
-      .push_bind(order.item)
-      .push_bind(order.cook_time);
-  });
-
-  let query_result = sqlx::query_as!(
-    OrderModel,
-    query_builder
-  )
-    .fetch_all(&data.db)
-    .await;
-*/
   let mut table_numbers: Vec<i16> = Vec::new();
   let mut items: Vec<String> = Vec::new();
   let mut cook_times: Vec<i16> = Vec::new();
 
   for order in body.into_iter() {
     table_numbers.push(table_number);
+
+    if order.item.is_empty() {
+      return Err(CustomError::OrderMissingItem);
+    }
+    if order.item.graphemes(true).count() > 255 {
+      return Err(CustomError::OrderItemTooLong);
+    }
     items.push(order.item);
+
+    if order.cook_time < 1 {
+      return Err(CustomError::OrderCookTimeTooShort);
+    }
+    if order.cook_time > 30 {
+      return Err(CustomError::OrderCookTimeTooLong);
+    }
     cook_times.push(order.cook_time);
   }
+
+
 
   let query_result = sqlx::query_as!(
     OrderModel,
@@ -77,7 +76,7 @@ pub async fn create_orders_handler(
   match query_result {
     Ok(_) => {
       let orders_result = query_result.unwrap();
-      let json_response = serde_json::json!({
+      let json_response = json!({
         "status": "success",
         "results": orders_result.len(),
         "orders": orders_result
@@ -85,11 +84,8 @@ pub async fn create_orders_handler(
 
       return Ok((StatusCode::CREATED, Json(json_response)));
     }
-    Err(err) => {
-      return Err((
-        StatusCode::INTERNAL_SERVER_ERROR,
-        Json(json!({"status": "error", "message": format!("{:?}", err)})),
-      ));
+    Err(_) => {
+      return Err(CustomError::InternalServerError);
     }
   }
 }

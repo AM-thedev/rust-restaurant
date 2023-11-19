@@ -1,4 +1,5 @@
 mod routes;
+mod errors;
 mod models {
   pub mod order;
 }

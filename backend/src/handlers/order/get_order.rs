@@ -2,21 +2,22 @@ use std::sync::Arc;
 
 use axum::{
   extract::{Path, State},
-  http::StatusCode,
   response::IntoResponse,
   Json,
 };
+use serde_json::json;
 
 use crate::{
-  models::order::OrderModel,
   AppState,
+  models::order::OrderModel,
+  errors::CustomError
 };
 
 
 pub async fn get_order_handler(
   Path(id): Path<uuid::Uuid>,
   State(data): State<Arc<AppState>>,
-) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+) -> Result<impl IntoResponse, CustomError> {
   let query_result = sqlx::query_as!(
     OrderModel,
     "SELECT * FROM orders WHERE id = $1",
@@ -27,9 +28,9 @@ pub async fn get_order_handler(
 
   match query_result {
     Ok(order) => {
-      let order_response = serde_json::json!({
+      let order_response = json!({
         "status": "success",
-        "data": serde_json::json!({
+        "data": json!({
           "order": order
         })
       });
@@ -37,11 +38,7 @@ pub async fn get_order_handler(
       return Ok(Json(order_response))
     }
     Err(_) => {
-      let error_response = serde_json::json!({
-        "status": "fail",
-        "message": format!("Order with ID: {} not found", id)
-      });
-      return Err((StatusCode::NOT_FOUND, Json(error_response)));
+      return Err(CustomError::OrderNotFound);
     }
   }
 }
