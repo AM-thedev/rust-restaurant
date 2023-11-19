@@ -1,0 +1,35 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:15.3-alpine
+    container_name: postgres
+    ports:
+      - "6500:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "postgres", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rust_restaurant_backend_network
+    env_file:
+      - ./.env
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    restart: always
+    depends_on:
+      - postgres
+    networks:
+      - rust_restaurant_backend_network
+    env_file:
+      - ./.env
+volumes:
+  postgres:
+  pgadmin-data:
+networks:
+  rust_restaurant_backend_network
