@@ -22,3 +22,9 @@ start-dev:
 .PHONY: stop
 stop:
 	docker-compose down
+
+## Kill the websocket occupying the backend address
+.PHONY: kill
+address != lsof -ti :8000
+kill:
+	sudo kill -9 $(address)

@@ -17,3 +17,8 @@ start-dev:
 .PHONY: stop
 stop:
 	cd backend && make stop
+
+## Kill the websocket occupying the backend address
+.PHONY: kill
+kill:
+	cd backend && make kill
