@@ -2,9 +2,9 @@
 # Rust Restaurant API
 ## About The Project
 
-A simple Rust api for retrieving, adding, and deleting restaurant orders from a table.
-Made using Axum and PostgreSQL, a pre-filled .env file is included for convenience.
-When the backend starts, 5 fake users will start making various requests to the server at random intervals.
+A simple Rust api for retrieving, adding, and deleting orders from a restaurant table.
+Made using Axum with PostgreSQL in roughly 6 dev hours.  A pre-filled .env file is included for convenience.
+**Note:** When the backend starts 5 fake users will start making various requests to the server at random intervals.
 
 
 <!-- GETTING STARTED -->
