@@ -40,9 +40,7 @@ pub async fn get_order_handler(
     Ok(order) => {
       let order_response = json!({
         "status": "success",
-        "data": json!({
-          "order": order
-        })
+        "data": order
       });
 
       return Ok(Json(order_response))
