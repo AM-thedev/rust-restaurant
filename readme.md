@@ -2,15 +2,15 @@
 # Rust Restaurant API
 ## About The Project
 
-A simple Rust api for retrieving, adding, and deleting orders from a restaurant table.
-Made using Axum with PostgreSQL in roughly 6 dev hours.  A pre-filled .env file is included for convenience.
+A simple Rust api for retrieving, adding, and deleting orders from a restaurant table.<br />
+Made using Axum with PostgreSQL in roughly 6 dev hours.  A pre-filled .env file is included for convenience.<br />
 **Note:** When the backend starts 5 fake users will start making various requests to the server at random intervals.
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-If you want to test the api manually, simply import the `Rust Restaurant Api.postman.json` file into Postman.
+If you want to test the api manually, simply import the `Rust Restaurant Api.postman.json` file into Postman.<br />
 Execute the following to get the api up and running:
 
 ### Instructions
@@ -57,15 +57,15 @@ Execute the following to get the api up and running:
 
 ### Endpoints
 
-* `/api/healthcheck`
-  **GET** A simple health check endpoint with a helpful message.
-* `/api/tables/{table_number}`
-  **GET** all the orders from table `{table_number}`.
+**GET** A simple health check endpoint with a helpful message.
+* `/api/healthcheck`<br />
+**GET** all the orders from table `{table_number}`.
+* `/api/tables/{table_number}`<br />
+ **GET** a single order with `{id}`.
+* `/api/orders/{id}`<br />
+**POST** 1-10 orders to `{table_number}`.
+* `/api/tables/{table_number}`<br />
+**DELETE** a single order with `{id}`.
 * `/api/orders/{id}`
-  **GET** a single order with `{id}`.
-* `/api/tables/{table_number}`
-  **POST** 1-10 orders to `{table_number}`.
-* `/api/orders/{id}`
-  **DELETE** a single order with `{id}`.
 
 _NOTE: No UPDATE endpoint since no update functionality was requested._
