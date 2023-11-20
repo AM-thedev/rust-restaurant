@@ -11,18 +11,17 @@ init:
 .PHONY: start
 start:
 	docker-compose up -d\
-	&& cargo run
-
-## Start up the backend in dev mode
-.PHONY: start-dev
-start-dev:
-	docker-compose up -d\
 	&& cargo watch -q -w src/ -x run
 
 ## Shut down the backend
 .PHONY: stop
 stop:
 	docker-compose down
+
+## Run tests
+.PHONY: test
+test:
+	cargo test
 
 ## Kill the websocket occupying the backend address
 .PHONY: kill
