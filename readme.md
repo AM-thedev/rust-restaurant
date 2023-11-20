@@ -3,8 +3,8 @@
 ## About The Project
 
 A simple Rust api for retrieving, adding, and deleting orders from a restaurant table.<br />
-Made using Axum with PostgreSQL in roughly 6 dev hours.  A pre-filled .env file is included for convenience.<br />
-**Note:** When the backend starts 5 fake users will start making various requests to the server at random intervals.
+Made using Axum with PostgreSQL in roughly 6 dev hours.  A pre-filled .env file is included for convenience.<br /><br />
+_**Note:** When the backend starts 5 fake users will start making various requests to the server at random intervals._
 
 
 <!-- GETTING STARTED -->
@@ -57,15 +57,15 @@ Execute the following to get the api up and running:
 
 ### Endpoints
 
-**GET** A simple health check endpoint with a helpful message.
-* `/api/healthcheck`<br />
-**GET** all the orders from table `{table_number}`.
-* `/api/tables/{table_number}`<br />
- **GET** a single order with `{id}`.
-* `/api/orders/{id}`<br />
-**POST** 1-10 orders to `{table_number}`.
-* `/api/tables/{table_number}`<br />
-**DELETE** a single order with `{id}`.
+* `/api/healthcheck`
+  **GET** A simple health check endpoint with a helpful message.<br /><br />
+* `/api/tables/{table_number}`
+  **GET** all the orders from table `{table_number}`.<br /><br />
 * `/api/orders/{id}`
+  **GET** a single order with `{id}`.<br /><br />
+* `/api/tables/{table_number}`
+  **POST** 1-10 orders to `{table_number}`.<br /><br />
+* `/api/orders/{id}`
+  **DELETE** a single order with `{id}`.
 
 _NOTE: No UPDATE endpoint since no update functionality was requested._
