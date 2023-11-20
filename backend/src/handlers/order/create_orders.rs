@@ -121,13 +121,15 @@ pub fn validate(table_number: i16, body: CreateOrdersSchema) -> Result<Validated
     items.push(order.item);
 
     //  If the cooking time is not within 1-30 minutes, return error.
-    if order.cook_time < 1 {
+    //  If no cooking time is provided do 15 minutes by default.
+    let cook_time = order.cook_time.unwrap_or(15);
+    if cook_time < 1 {
       return Err(CustomError::OrderCookTimeTooShort);
     }
-    if order.cook_time > 30 {
+    if cook_time > 30 {
       return Err(CustomError::OrderCookTimeTooLong);
     }
-    cook_times.push(order.cook_time);
+    cook_times.push(cook_time);
   }
 
   Ok(ValidatedOrders{table_numbers, items, cook_times})
@@ -249,6 +251,21 @@ mod tests {
     }
 
     #[test]
+    fn success_when_cook_time_missing_default_time_added() {
+      let test_json = r#"{"orders":[{"item":"food"}]}"#;
+      let test_body = serde_json::from_str(test_json).unwrap();
+      let table_number: i16 = 50;
+      let result = validate(table_number, test_body).unwrap();
+
+      let table_numbers: Vec<i16> = [table_number].to_vec();
+      let items: Vec<String> = [String::from("food")].to_vec();
+      let cook_times: Vec<i16> = [15].to_vec();
+      let validated_data = ValidatedOrders{table_numbers, items, cook_times};
+
+      assert_eq!(validated_data, result)
+    }
+
+    #[test]
     fn success_return_transformed_data_if_all_validations_pass() {
       let test_json = r#"{"orders":[
         {"item":"food","cook_time":1},
@@ -259,7 +276,7 @@ mod tests {
         ]}"#;
       let test_body = serde_json::from_str(test_json).unwrap();
       let table_number: i16 = 50;
-      let just_right = validate(table_number, test_body).unwrap();
+      let result = validate(table_number, test_body).unwrap();
 
       let table_numbers: Vec<i16> = [table_number, table_number].to_vec();
       let items: Vec<String> = [
@@ -269,6 +286,6 @@ mod tests {
       let cook_times: Vec<i16> = [1, 30].to_vec();
       let validated_data = ValidatedOrders{table_numbers, items, cook_times};
 
-      assert_eq!(validated_data, just_right)
+      assert_eq!(validated_data, result)
     }
 }

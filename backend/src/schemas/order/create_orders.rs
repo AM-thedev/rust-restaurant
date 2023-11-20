@@ -10,5 +10,5 @@ pub struct CreateOrdersSchema {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SingleOrder {
   pub item: String,
-  pub cook_time: i16,
+  pub cook_time: Option<i16>,
 }
