@@ -57,15 +57,15 @@ Execute the following to get the api up and running:
 
 ### Endpoints
 
-* `/api/healthcheck`
+* `/api/healthcheck`<br />
   **GET** A simple health check endpoint with a helpful message.<br /><br />
-* `/api/tables/{table_number}`
+* `/api/tables/{table_number}`<br />
   **GET** all the orders from table `{table_number}`.<br /><br />
-* `/api/orders/{id}`
+* `/api/orders/{id}`<br />
   **GET** a single order with `{id}`.<br /><br />
-* `/api/tables/{table_number}`
+* `/api/tables/{table_number}`<br />
   **POST** 1-10 orders to `{table_number}`.<br /><br />
-* `/api/orders/{id}`
+* `/api/orders/{id}`<br />
   **DELETE** a single order with `{id}`.
 
 _NOTE: No UPDATE endpoint since no update functionality was requested._
