@@ -17,6 +17,7 @@ use crate::{
 };
 
 
+/// A struct to hold the validated request body, designed to work with PostgreSQL's UNNEST functinon
 #[derive(Debug, PartialEq)]
 pub struct ValidatedOrders {
   pub table_numbers: Vec<i16>,
@@ -25,11 +26,23 @@ pub struct ValidatedOrders {
 }
 
 
+/** Attempts to create all orders contained in the request body assigned to the table number specified in the url path
+
+  It will include an array of the created Order models if successful, or a CustomError if it fails.
+  The UNNEST function is unique to PostgreSQL and is the more optimized choice for multi-insert scenarios.
+  
+  # Arguments
+  * `Path(table_number)` - The table number extracted from the url path
+  * `State(data)` - A reference to our database
+  * `Json(body)` - The request body containing the orders
+
+*/
 pub async fn create_orders_handler(
   Path(table_number): Path<i16>,
   State(data): State<Arc<AppState>>,
   Json(body): Json<CreateOrdersSchema>,
 ) -> Result<impl IntoResponse, CustomError> {
+
   // Validation
   let validated_body = validate(table_number, body).unwrap();
 
@@ -64,8 +77,16 @@ pub async fn create_orders_handler(
 }
 
 
+/** Returns the transformed body data if validation passes, or a CustomError if validation fails
+
+  # Arguments
+
+  * `table_number` - The table number extracted from the url path
+  * `body` - The request body containing the orders
+
+*/
 pub fn validate(table_number: i16, body: CreateOrdersSchema) -> Result<ValidatedOrders, CustomError> {
-  
+
   //  If table number is not within 1-100, return error.
   if table_number < 1 || table_number > 100 {
     return Err(CustomError::TableNotFound);

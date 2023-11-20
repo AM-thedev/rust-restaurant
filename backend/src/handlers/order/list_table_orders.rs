@@ -14,6 +14,18 @@ use crate::{
   AppState,
 };
 
+
+/** If successful will return a paginated response containing an array of all orders with the specified table number
+
+  It will include an array of the created Order models if successful, or a CustomError if it fails.
+  The UNNEST function is unique to PostgreSQL and is the more optimized choice for multi-insert scenarios.
+  
+  # Arguments
+  * `Path(table_number)` - The table number extracted from the url path
+  * opts - Optional pagination customization, a default will be provided if left empty
+  * `State(data)` - A reference to our database
+
+*/
 pub async fn table_orders_list_handler(
   Path(table_number): Path<i16>,
   opts: Option<Query<SearchTablePagination>>,
@@ -51,7 +63,16 @@ pub async fn table_orders_list_handler(
   return Ok(Json(json_response))
 }
 
+
+/** Returns the table number if validation passes or returns a CustomError if the requested table number is not within 1-100
+
+  # Arguments
+
+  * `table_number` - The table number extracted from the url path
+
+*/
 pub fn validate(table_number: i16) -> Result<i16, CustomError> {
+  
   if table_number < 1 || table_number > 100 {
     return Err(CustomError::TableNotFound);
   }
