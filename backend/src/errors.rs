@@ -8,19 +8,19 @@ use axum::{
 };
 use serde_json::json;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum CustomError {
   // General
   InternalServerError,
 
   // Order related
   OrderNotFound,
-  OrderMissingItem,
+  OrderItemEmpty,
   OrderItemTooLong,
   OrderCookTimeTooLong,
   OrderCookTimeTooShort,
   TooManyOrders,
-  AtLastOneOrder,
+  TooFewOrders,
 
   // Table related
   TableNotFound
@@ -40,13 +40,13 @@ impl IntoResponse for CustomError {
         StatusCode::NOT_FOUND,
         "The order with the provided ID could not be found."
       ),
-      Self::OrderMissingItem => (
+      Self::OrderItemEmpty => (
         StatusCode::BAD_REQUEST,
         "One or more orders are missing an item."
       ),
       Self::OrderItemTooLong => (
         StatusCode::BAD_REQUEST,
-        "One or more order items are longer than 255 characters long."
+        "One or more order items are longer than 100 characters long."
       ),
       Self::OrderCookTimeTooLong => (
         StatusCode::BAD_REQUEST,
@@ -60,7 +60,7 @@ impl IntoResponse for CustomError {
         StatusCode::BAD_REQUEST,
         "Only up to 10 orders can be submitted with a single request."
       ),
-      Self::AtLastOneOrder => (
+      Self::TooFewOrders => (
         StatusCode::BAD_REQUEST,
         "At least 1 order must be submitted with a request."
       ),
