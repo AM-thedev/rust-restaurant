@@ -13,7 +13,7 @@ use crate::{
   AppState,
   errors::CustomError,
   models::order::OrderModel,
-  schemas::order::create_order::CreateOrderSchema,
+  schemas::order::create_orders::CreateOrdersSchema,
 };
 
 
@@ -28,7 +28,7 @@ pub struct ValidatedOrders {
 pub async fn create_orders_handler(
   Path(table_number): Path<i16>,
   State(data): State<Arc<AppState>>,
-  Json(body): Json<CreateOrderSchema>,
+  Json(body): Json<CreateOrdersSchema>,
 ) -> Result<impl IntoResponse, CustomError> {
   // Validation
   let validated_body = validate(table_number, body).unwrap();
@@ -64,7 +64,7 @@ pub async fn create_orders_handler(
 }
 
 
-pub fn validate(table_number: i16, body: CreateOrderSchema) -> Result<ValidatedOrders, CustomError> {
+pub fn validate(table_number: i16, body: CreateOrdersSchema) -> Result<ValidatedOrders, CustomError> {
   
   //  If table number is not within 1-100, return error.
   if table_number < 1 || table_number > 100 {

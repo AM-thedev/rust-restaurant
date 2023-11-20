@@ -5,7 +5,7 @@ mod models {
 }
 mod schemas {
   pub mod order {
-    pub mod create_order;
+    pub mod create_orders;
     pub mod search_table_orders;
     pub mod search_table_pagination;
   }

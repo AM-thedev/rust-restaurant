@@ -4,7 +4,8 @@ init:
 	cargo install cargo-watch\
 	&& cargo install sqlx-cli --no-default-features --features native-tls,postgres\
 	&& sqlx database create\
-	&& sqlx migrate run
+	&& sqlx migrate run\
+	&& cargo test
 
 ## Start up the backend
 .PHONY: start

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct CreateOrderSchema {
+pub struct CreateOrdersSchema {
   pub orders: Vec<SingleOrder>
 }
 
