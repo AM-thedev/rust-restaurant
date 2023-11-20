@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use axum::{
-  extract::{Query, State, Path},
+  extract::{State, Path},
   response::IntoResponse,
   Json,
 };
@@ -10,45 +10,37 @@ use serde_json::json;
 use crate::{
   errors::CustomError,
   models::order::OrderModel,
-  schemas::order::search_table_pagination::SearchTablePagination,
   AppState,
 };
 
 
-/** If successful will return a paginated response containing an array of all orders with the specified table number
+/** If successful it will return all orders with the specified table number, or a CustomError if it fails.
 
-  It will include an array of the created Order models if successful, or a CustomError if it fails.
   The UNNEST function is unique to PostgreSQL and is the more optimized choice for multi-insert scenarios.
   
   # Arguments
   * `Path(table_number)` - The table number extracted from the url path
-  * opts - Optional pagination customization, a default will be provided if left empty
   * `State(data)` - A reference to our database
 
 */
 pub async fn table_orders_list_handler(
   Path(table_number): Path<i16>,
-  opts: Option<Query<SearchTablePagination>>,
   State(data): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, CustomError> {
 
+  // Validation
   let validated_table_number = validate(table_number).unwrap();
-  
-  let Query(opts) = opts.unwrap_or_default();
 
-  let limit = opts.limit.unwrap_or(10);
-  let offset = (opts.page.unwrap_or(1) - 1) * limit;
-
+  // Database request
   let query_result = sqlx::query_as!(
-    OrderModel,
-    "SELECT * FROM orders WHERE table_number = $1 ORDER by created_at LIMIT $2 OFFSET $3",
-    validated_table_number,
-    limit as i32,
-    offset as i32
-  )
-  .fetch_all(&data.db)
-  .await;
+      OrderModel,
+      "SELECT * FROM orders WHERE table_number = $1 ORDER by created_at",
+      validated_table_number
+    )
+    .fetch_all(&data.db)
+    .await;
 
+  // Request result
   if query_result.is_err() {
     return Err(CustomError::InternalServerError);
   }
@@ -67,12 +59,11 @@ pub async fn table_orders_list_handler(
 /** Returns the table number if validation passes or returns a CustomError if the requested table number is not within 1-100
 
   # Arguments
-
   * `table_number` - The table number extracted from the url path
 
 */
 pub fn validate(table_number: i16) -> Result<i16, CustomError> {
-  
+
   if table_number < 1 || table_number > 100 {
     return Err(CustomError::TableNotFound);
   }
