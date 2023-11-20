@@ -1,11 +1,11 @@
 mod routes;
+mod errors;
 mod models {
   pub mod order;
 }
 mod schemas {
   pub mod order {
-    pub mod create_order;
-    pub mod search_table_orders;
+    pub mod create_orders;
     pub mod search_table_pagination;
   }
 }

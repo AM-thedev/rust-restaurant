@@ -8,12 +8,17 @@ init:
 start:
 	cd backend && make start
 
-## Start up the backend in dev mode
-.PHONY: start-dev
-start:
-	cd backend && make start-dev
-
 ## Shut down the backend
 .PHONY: stop
 stop:
 	cd backend && make stop
+
+## Run backend tests
+.PHONY: test
+test:
+	cd backend && make test
+
+## Kill the websocket occupying the backend address
+.PHONY: kill
+kill:
+	cd backend && make kill

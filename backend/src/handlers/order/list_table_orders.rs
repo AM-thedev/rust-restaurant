@@ -2,23 +2,38 @@ use std::sync::Arc;
 
 use axum::{
   extract::{Query, State, Path},
-  http::StatusCode,
   response::IntoResponse,
   Json,
 };
+use serde_json::json;
 
 use crate::{
+  errors::CustomError,
   models::order::OrderModel,
   schemas::order::search_table_pagination::SearchTablePagination,
   AppState,
 };
 
 
+/** If successful will return a paginated response containing an array of all orders with the specified table number
+
+  It will include an array of the created Order models if successful, or a CustomError if it fails.
+  The UNNEST function is unique to PostgreSQL and is the more optimized choice for multi-insert scenarios.
+  
+  # Arguments
+  * `Path(table_number)` - The table number extracted from the url path
+  * opts - Optional pagination customization, a default will be provided if left empty
+  * `State(data)` - A reference to our database
+
+*/
 pub async fn table_orders_list_handler(
   Path(table_number): Path<i16>,
   opts: Option<Query<SearchTablePagination>>,
   State(data): State<Arc<AppState>>,
-) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+) -> Result<impl IntoResponse, CustomError> {
+
+  let validated_table_number = validate(table_number).unwrap();
+  
   let Query(opts) = opts.unwrap_or_default();
 
   let limit = opts.limit.unwrap_or(10);
@@ -27,7 +42,7 @@ pub async fn table_orders_list_handler(
   let query_result = sqlx::query_as!(
     OrderModel,
     "SELECT * FROM orders WHERE table_number = $1 ORDER by created_at LIMIT $2 OFFSET $3",
-    table_number,
+    validated_table_number,
     limit as i32,
     offset as i32
   )
@@ -35,19 +50,65 @@ pub async fn table_orders_list_handler(
   .await;
 
   if query_result.is_err() {
-    let error_response = serde_json::json!({
-      "status": "fail",
-      "message": "Something bad happened while fetching the table orders.",
-    });
-    return Err((StatusCode::INTERNAL_SERVER_ERROR, Json(error_response)));
+    return Err(CustomError::InternalServerError);
   }
 
   let orders = query_result.unwrap();
 
-  let json_response = serde_json::json!({
+  let json_response = json!({
     "status": "success",
     "results": orders.len(),
     "orders": orders
   });
   return Ok(Json(json_response))
+}
+
+
+/** Returns the table number if validation passes or returns a CustomError if the requested table number is not within 1-100
+
+  # Arguments
+
+  * `table_number` - The table number extracted from the url path
+
+*/
+pub fn validate(table_number: i16) -> Result<i16, CustomError> {
+  
+  if table_number < 1 || table_number > 100 {
+    return Err(CustomError::TableNotFound);
+  }
+  Ok(table_number)
+}
+
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  
+    #[test]
+    fn error_if_table_number_is_too_small() {
+      let less_than_one = validate(0).unwrap_err();
+        
+      match less_than_one {
+        CustomError::TableNotFound => assert!(true),
+        _ => assert!(false)
+      }
+    }
+
+    #[test]
+    fn error_if_table_number_is_too_big() {
+      let more_than_one_hundred = validate(101).unwrap_err();
+        
+      match more_than_one_hundred {
+        CustomError::TableNotFound => assert!(true),
+        _ => assert!(false)
+      }
+    }
+
+    #[test]
+    fn success_if_table_number_is_between_one_and_a_hundred() {
+      let table_number: i16 = 50;
+      let just_right = validate(50).unwrap();
+      
+      assert_eq!(table_number, just_right)
+    }
 }
