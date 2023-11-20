@@ -1,5 +1,5 @@
 <!-- ABOUT THE PROJECT -->
-### Rust Restaurant API
+# Rust Restaurant API
 ## About The Project
 
 A simple Rust api for retrieving, adding, and deleting restaurant orders from a table.
@@ -57,10 +57,15 @@ Execute the following to get the api up and running:
 
 ### Endpoints
 
-* `/api/healthcheck` **GET** A simple health check endpoint with a helpful message.
-* `/api/tables/{table_number}?page=1&limit=10` **GET** all the orders from table `{table_number}` with optional pagination.
-* `/api/orders/{id}` **GET** a single order with `{id}`.
-* `/api/tables/{table_number}` **POST** 1-10 orders to `{table_number}`.
-* `/api/orders/{id}` **DELETE** a single order with `{id}`.
+* `/api/healthcheck`
+  **GET** A simple health check endpoint with a helpful message.
+* `/api/tables/{table_number}?page=1&limit=10`
+  **GET** all the orders from table `{table_number}` with optional pagination.
+* `/api/orders/{id}`
+  **GET** a single order with `{id}`.
+* `/api/tables/{table_number}`
+  **POST** 1-10 orders to `{table_number}`.
+* `/api/orders/{id}`
+  **DELETE** a single order with `{id}`.
 
 _NOTE: No UPDATE endpoint since no update functionality was requested._
