@@ -26,6 +26,7 @@ pub async fn get_order_handler(
   State(data): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, CustomError> {
 
+  // Database Request
   let query_result = sqlx::query_as!(
     OrderModel,
     "SELECT * FROM orders WHERE id = $1",
@@ -34,6 +35,7 @@ pub async fn get_order_handler(
   .fetch_one(&data.db)
   .await;
 
+  // Request result
   match query_result {
     Ok(order) => {
       let order_response = json!({

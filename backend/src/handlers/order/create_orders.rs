@@ -80,7 +80,6 @@ pub async fn create_orders_handler(
 /** Returns the transformed body data if validation passes, or a CustomError if validation fails
 
   # Arguments
-
   * `table_number` - The table number extracted from the url path
   * `body` - The request body containing the orders
 

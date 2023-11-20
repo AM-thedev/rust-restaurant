@@ -59,8 +59,8 @@ Execute the following to get the api up and running:
 
 * `/api/healthcheck`
   **GET** A simple health check endpoint with a helpful message.
-* `/api/tables/{table_number}?page=1&limit=10`
-  **GET** all the orders from table `{table_number}` with optional pagination.
+* `/api/tables/{table_number}`
+  **GET** all the orders from table `{table_number}`.
 * `/api/orders/{id}`
   **GET** a single order with `{id}`.
 * `/api/tables/{table_number}`

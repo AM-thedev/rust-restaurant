@@ -24,13 +24,15 @@ pub async fn delete_order_handler(
   State(data): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, CustomError> {
   
+  // Database Request
   let rows_affected = sqlx::query!("DELETE FROM orders WHERE id = $1", id)
     .execute(&data.db)
     .await
     .unwrap()
     .rows_affected();
   
-    // If no rows were affected by the delete query then nothing could have been deleted
+    // Request result
+    //  If no rows were affected by the delete query then nothing could have been deleted
     if rows_affected == 0 {
       return Err(CustomError::OrderNotFound);
     }
