@@ -40,11 +40,7 @@ Execute the following to get the api up and running:
    ```
 * Start up the frontend, access at: `localhost:3000`
    ```sh
-   make start-front
-   ```
-* Shut down the frontend
-   ```sh
-   make stop-front
+   make front
    ```
 * Run backend tests
    ```sh

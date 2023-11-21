@@ -23,6 +23,12 @@ stop:
 test:
 	cargo test
 
+## Start up the frontend
+.PHONY: front
+front:
+	cd ../frontend && npm start
+
+
 ## Kill the websocket occupying the backend address
 .PHONY: kill
 address != lsof -ti :8000
