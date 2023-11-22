@@ -1,16 +1,19 @@
 ## Initialize the database
 .PHONY: init
 init:
-	cargo install cargo-watch\
+	docker-compose up -d\
 	&& sqlx database create\
-	&& sqlx migrate run
+	&& sqlx migrate run\
+	&& cargo build\
+	&& docker-compose down
+## && cargo install cargo-watch
 
 ## Start up the backend
 .PHONY: start
 start:
 	docker-compose up -d\
 	&& cargo test\
-	&& cargo watch -q -w src/ -x run
+	&& cargo run
 
 ## Shut down the backend
 .PHONY: stop
