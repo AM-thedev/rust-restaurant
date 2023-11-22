@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"orders\": [{\r\n            \"item\": \"food1\",\r\n            \"cook_time\": 5\r\n        },\r\n        {\r\n            \"item\": \"food2\",\r\n            \"cook_time\": 10\r\n        },\r\n        {\r\n            \"item\": \"food3\",\r\n            \"cook_time\": 22\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"orders\": [{\r\n            \"item\": \"test food one\",\r\n            \"cook_time\": 1\r\n        },\r\n        {\r\n            \"item\": \"test food two\",\r\n            \"cook_time\": 30\r\n        },\r\n        {\r\n            \"item\": \"test food three\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -53,16 +53,6 @@
 						"tables",
 						":table_number"
 					],
-					"query": [
-						{
-							"key": "page",
-							"value": "1"
-						},
-						{
-							"key": "limit",
-							"value": "10"
-						}
-					],
 					"variable": [
 						{
 							"key": "table_number",
@@ -87,7 +77,7 @@
 					"port": "8000",
 					"path": [
 						"api",
-						""
+						"healthcheck"
 					]
 				}
 			},
@@ -113,7 +103,7 @@
 					"variable": [
 						{
 							"key": "Id",
-							"value": "a5c31f28-f28f-4f71-b248-d9b87dc24e16"
+							"value": ""
 						}
 					]
 				}
@@ -147,7 +137,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "d50803ba-82c8-4b74-98c1-4e51698d140c"
+							"value": ""
 						}
 					]
 				}
