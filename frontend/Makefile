@@ -23,6 +23,12 @@ test:
 front:
 	npm start
 
+## Kill the websocket occupying the frontend address
+.PHONY: front-kill
+address != lsof -ti :3000
+front-kill:
+	sudo kill -9 $(address)
+
 ## Kill the websocket occupying the backend address
 .PHONY: kill
 kill:

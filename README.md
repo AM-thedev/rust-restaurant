@@ -46,9 +46,13 @@ Execute the following to get the api up and running:
    ```sh
    make test
    ```
-* If when re-starting the server you get an error binding to 0.0.0.0:8000 because the address is already in use, use this command to kill the process occupying the address and try again.  Make sure the address isn't already being used by a different application. 
+* You may encounter an issue with bash where ctrl+C does not shut down the backend server, in that case consider closing the terminal entirely or running the following command to kill the process occupying the backend address (`localhost:8000`).
    ```sh
    make kill
+   ```
+* If you encounter the same issue with the frontend, consider closing the terminal entirely or running the following command to kill the process occupying the frontend address (`localhost:3000`).
+   ```sh
+   make front-kill
    ```
 
 ### Endpoints
