@@ -12,7 +12,5 @@ pub struct OrderModel {
   #[serde(rename = "cookTime")]
   pub cook_time: i16,
   #[serde(rename = "createdAt")]
-  pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-  #[serde(rename = "updatedAt")]
-  pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
+  pub created_at: Option<chrono::DateTime<chrono::Utc>>
 }

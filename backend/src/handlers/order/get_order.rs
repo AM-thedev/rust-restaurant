@@ -29,7 +29,7 @@ pub async fn get_order_handler(
   // Database Request
   let query_result = sqlx::query_as!(
     OrderModel,
-    "SELECT * FROM orders WHERE id = $1",
+    "SELECT id, table_number, cook_time, item, created_at FROM orders WHERE id = $1",
     id
   )
   .fetch_one(&data.db)
@@ -40,7 +40,7 @@ pub async fn get_order_handler(
     Ok(order) => {
       let order_response = json!({
         "status": "success",
-        "data": order
+        "order": order
       });
 
       return Ok(Json(order_response))

@@ -49,7 +49,7 @@ pub async fn create_orders_handler(
   // Database request
   let query_result = sqlx::query_as!(
     OrderModel,
-    "INSERT INTO orders(table_number, item, cook_time) SELECT * FROM UNNEST($1::smallint[], $2::text[], $3::smallint[]) RETURNING *",
+    "INSERT INTO orders(table_number, item, cook_time) SELECT * FROM UNNEST($1::smallint[], $2::text[], $3::smallint[]) RETURNING id, table_number, item, cook_time, created_at",
     &validated_body.table_numbers[..],
     &validated_body.items[..],
     &validated_body.cook_times[..]
