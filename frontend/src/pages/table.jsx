@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
   useParams,
   NavLink
 } from "react-router-dom"
@@ -45,7 +40,7 @@ const Table = () => {
       status = "Now!"
     } else {
       const time_left = Math.round((done_at - Date.now()) / 60000)
-      if (time_left == 1) {
+      if (time_left === 1) {
         status = `${time_left} min`
       } else {
         status = `${time_left} mins`

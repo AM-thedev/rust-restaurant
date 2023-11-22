@@ -2,15 +2,14 @@
 .PHONY: init
 init:
 	cargo install cargo-watch\
-	&& cargo install sqlx-cli --no-default-features --features native-tls,postgres\
 	&& sqlx database create\
-	&& sqlx migrate run\
-	&& cargo test
+	&& sqlx migrate run
 
 ## Start up the backend
 .PHONY: start
 start:
 	docker-compose up -d\
+	&& cargo test\
 	&& cargo watch -q -w src/ -x run
 
 ## Shut down the backend

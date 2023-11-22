@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams,
-  NavLink
-} from "react-router-dom"
+import { useParams } from 'react-router-dom'
 import { TableLink } from '../styles'
 
 const Order = () => {
@@ -30,7 +22,7 @@ const Order = () => {
         data.status = "Now!"
       } else {
         const time_left = Math.round((done_at - Date.now()) / 60000)
-        if(time_left == 1) {
+        if(time_left === 1) {
           data.status = `${time_left} min`
         } else {
           data.status = `${time_left} mins`
@@ -46,7 +38,7 @@ const Order = () => {
   async function handleDelete(id) {
     try {
       await axios.delete('http://localhost:8000/api/orders/' + id)
-      window.location.replace('/tables/' + table_number);
+      window.location.replace('/tables/' + table_number)
     } catch (e) {
       console.log(e)
     }

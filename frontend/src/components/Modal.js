@@ -1,14 +1,12 @@
-import React, { useState } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import ReactDOM from 'react-dom';
-import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
+import React from "react"
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik'
 import {
-  Button,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "reactstrap";
+} from "reactstrap"
 
 
 export default function AlbumModal({ toggle, onSave }) {
@@ -20,7 +18,7 @@ export default function AlbumModal({ toggle, onSave }) {
         cook_time: 15,
       },
     ],
-  };
+  }
 
   return (
     <Modal isOpen={true} toggle={toggle}>
@@ -29,7 +27,7 @@ export default function AlbumModal({ toggle, onSave }) {
         <Formik
           initialValues={initialValues}
           onSubmit={async (values) => {
-            await new Promise((r) => setTimeout(r, 500));
+            await new Promise((r) => setTimeout(r, 500))
             onSave(values)
           }}
         >

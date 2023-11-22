@@ -1,7 +1,8 @@
 ## Initialize the database
 .PHONY: init
 init:
-	cd backend && make init
+	cd backend && make init\
+	&& cd ../frontend && npm install
 
 ## Start up the backend
 .PHONY: start

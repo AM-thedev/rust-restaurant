@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { TablesContainer, TableLink } from '../styles';
+import React  from 'react'
+import { TablesContainer, TableLink } from '../styles'
 
 
 const Home = () => {
@@ -14,7 +13,7 @@ const Home = () => {
         }
       </TablesContainer>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
