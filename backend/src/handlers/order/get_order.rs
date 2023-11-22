@@ -29,7 +29,7 @@ pub async fn get_order_handler(
   // Database Request
   let query_result = sqlx::query_as!(
     OrderModel,
-    "SELECT * FROM orders WHERE id = $1",
+    "SELECT id, table_number, cook_time, item, created_at FROM orders WHERE id = $1",
     id
   )
   .fetch_one(&data.db)

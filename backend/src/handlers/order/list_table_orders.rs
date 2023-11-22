@@ -29,12 +29,15 @@ pub async fn table_orders_list_handler(
 ) -> Result<impl IntoResponse, CustomError> {
 
   // Validation
-  let validated_table_number = validate(table_number).unwrap();
+  let validated_table_number = match validate(table_number) {
+    Ok(value) => value,
+    Err(error) => return Err(error)
+  };
 
   // Database request
   let query_result = sqlx::query_as!(
       OrderModel,
-      "SELECT * FROM orders WHERE table_number = $1 ORDER by created_at",
+      "SELECT id, table_number, item, cook_time, created_at FROM orders WHERE table_number = $1 ORDER by created_at",
       validated_table_number
     )
     .fetch_all(&data.db)

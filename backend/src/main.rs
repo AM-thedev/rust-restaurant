@@ -1,5 +1,6 @@
 mod routes;
 mod errors;
+mod thread;
 mod models {
   pub mod order;
 }
@@ -28,10 +29,10 @@ use axum::http::{
   Method,
 };
 use dotenv::dotenv;
-use routes::create_router;
 use tower_http::cors::CorsLayer;
-
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
+use routes::create_router;
+use thread::create_client;
 
 
 pub struct AppState {
@@ -65,6 +66,12 @@ async fn main() {
     .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE]);
 
   let app = create_router(Arc::new(AppState { db: pool.clone() })).layer(cors);
+
+  // Edit this number to change how many multi-threaded clients send requests while the server is running
+  let number_of_clients: i16 = 7;
+  for n in 1..(number_of_clients+1) {
+    create_client(n);
+  }
 
   println!("Server started successfully, rocket emoji.");
   axum::Server::bind(&"0.0.0.0:8000".parse().unwrap())
