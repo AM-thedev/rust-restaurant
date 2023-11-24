@@ -175,3 +175,11 @@ Execute the following to get the api up and running:
    Returns status `204 No Content`
 
 _NOTE: No UPDATE endpoint since no update functionality was requested._
+<br /><br />
+<!-- PGadmin -->
+### If you wish to manually view or manipulate the database:
+1. Make sure the docker environment is running with the terminal command `make start`.
+2. Go to the pgAdmin page at `localhost:5050` and login with the default pgAdmin credentials found in the .env file.
+3. Click on `Add New Server`; Enter a name in the General tab, and then in the `Connection` tab give the same name for the host and enter the postgres password found in the .env file before hitting save.
+4. In the column to the left, navigate to `Servers > postgres > Databases > rust_restaurant > Schemas > public > Tables`.
+5. Right-click on `orders` and select `View/Edit data > All Rows` to view or edit all of the data.
